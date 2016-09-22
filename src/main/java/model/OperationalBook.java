@@ -10,15 +10,15 @@ public class OperationalBook {
 
     @Id
     @GeneratedValue
-    Integer id;
+    private Integer id;
 
     @Embedded
-    OperationalItem from;
+    private OperationalItem from;
 
     @Embedded
-    OperationalItem to;
+    private OperationalItem to;
 
-    Date date;
+    private Date date;
 
     public OperationalBook(OperationalItem from, OperationalItem to, Date date) {
         this.from = from;

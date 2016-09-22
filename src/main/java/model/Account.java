@@ -15,13 +15,13 @@ public class Account {
 
     @Id
     @GeneratedValue
-    Integer id;
+    private Integer id;
 
-    BigDecimal amount;
+    private BigDecimal amount;
 
-    CurrencyTypes currType;
+    private CurrencyTypes currType;
 
-    Boolean deleted = false;
+    private Boolean deleted = false;
 
     public Integer getId() {
         return id;

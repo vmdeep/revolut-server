@@ -4,11 +4,14 @@ import com.avaje.ebean.Ebean;
 import model.Account;
 import model.OperationalBook;
 import model.OperationalItem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import services.DateTimeService;
 
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -22,6 +25,8 @@ public class AccountController {
     private RatesController ratesController = new RatesController();
 
     private DateTimeService dateTimeService = new DateTimeService();
+
+    private static final Logger log = LogManager.getLogger(AccountController.class);
 
     @GET
     public List<Account> list(@QueryParam("page") Integer page) {
@@ -47,7 +52,7 @@ public class AccountController {
         Account acc = Ebean.find(Account.class, id);
 
         if (acc == null) {
-            throw new RuntimeException("Account with id " + id + " not found!");
+            throw new WebApplicationException("Account with id " + id + " not found!", Response.Status.NOT_FOUND);
         }
         return acc;
     }
@@ -69,7 +74,7 @@ public class AccountController {
 
         if (fromAcc.getAmount().compareTo(amount) == -1) {
             Ebean.rollbackTransaction();
-            throw new RuntimeException("Not enough money for the operation");
+            throw new WebApplicationException("Not enough money for the operation", Response.Status.NOT_ACCEPTABLE);
 
         }
 

@@ -3,10 +3,13 @@ package controllers;
 import com.avaje.ebean.Ebean;
 import model.Rate;
 import model.types.CurrencyTypes;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import services.DateTimeService;
 
 import javax.inject.Singleton;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +22,8 @@ public class RatesController {
 
 
       private DateTimeService dateTimeService = new DateTimeService();
+
+      private static final Logger log = LogManager.getLogger(AccountController.class);
 
       @GET
       public List<Rate> list(@QueryParam("date") String date) {
@@ -68,7 +73,7 @@ public class RatesController {
             });
 
             if (!rates.containsKey(from) || !rates.containsKey(to)) {
-                  throw new RuntimeException("No valid rates for exchange");
+                  throw new WebApplicationException("Invalid rates for exchange", Response.Status.BAD_REQUEST);
             }
 
             return (rates.get(from).getRate().divide(rates.get(to).getRate(), 3, BigDecimal.ROUND_HALF_UP)).multiply(amount);

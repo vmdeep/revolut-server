@@ -2,6 +2,8 @@ package controllers;
 
 import com.avaje.ebean.Ebean;
 import model.OperationalBook;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import services.DateTimeService;
 
 import javax.inject.Singleton;
@@ -17,6 +19,8 @@ public class OperationalBookController {
 
     private DateTimeService dateTimeService = new DateTimeService();
 
+    private static final Logger log = LogManager.getLogger(AccountController.class);
+
     @GET
     public List<OperationalBook> list(@QueryParam("page") Integer page, @QueryParam("date") String date) {
         return Ebean.find(OperationalBook.class)
@@ -30,7 +34,7 @@ public class OperationalBookController {
 
     @GET
     @Path("/{id}")
-    public OperationalBook get(@PathParam("id") Integer id) {
+    public OperationalBook getById(@PathParam("id") Integer id) {
         return Ebean.find(OperationalBook.class, id);
     }
 }

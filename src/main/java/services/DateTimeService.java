@@ -1,5 +1,7 @@
 package services;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,7 +23,7 @@ public class DateTimeService {
 
             }
         } catch (ParseException e) {
-            throw new RuntimeException("Not valid date!");
+            throw new WebApplicationException("Not valid date!", Response.Status.BAD_REQUEST);
         }
 
         return timestamp;
