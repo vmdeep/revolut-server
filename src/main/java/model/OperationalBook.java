@@ -20,6 +20,12 @@ public class OperationalBook {
 
     Date date;
 
+    public OperationalBook(OperationalItem from, OperationalItem to, Date date) {
+        this.from = from;
+        this.to = to;
+        this.date = date;
+    }
+
     public Integer getId() {
         return id;
     }

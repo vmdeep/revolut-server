@@ -3,12 +3,11 @@ package controllers;
 import com.avaje.ebean.Ebean;
 import model.Rate;
 import model.types.CurrencyTypes;
+import services.DateTimeService;
 
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,31 +18,12 @@ import java.util.List;
 public class RatesController {
 
 
-      private static Date parseDate(String date) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            Date timestamp = null;
-
-            try {
-                  if (date == null || date.isEmpty()) {
-                        timestamp = dateFormat.parse(dateFormat.format(new Date()));
-
-                  } else {
-
-
-                        timestamp = dateFormat.parse(date);
-
-                  }
-            } catch (ParseException e) {
-                  throw new RuntimeException("Not valid date!");
-            }
-
-            return timestamp;
-      }
+      private DateTimeService dateTimeService = new DateTimeService();
 
       @GET
       public List<Rate> list(@QueryParam("date") String date) {
 
-            Date timestamp = parseDate(date);
+            Date timestamp = dateTimeService.parseDate(date);
 
             return Ebean.find(Rate.class).where().between("date", timestamp, timestamp).findList();
 
@@ -57,7 +37,7 @@ public class RatesController {
 
             Ebean.beginTransaction();
 
-            Rate rate = new Rate(type, amount, parseDate(date));
+            Rate rate = new Rate(type, amount, dateTimeService.parseDate(date));
 
             Ebean.insert(rate);
 
@@ -81,8 +61,8 @@ public class RatesController {
             final HashMap<String, Rate> rates = new HashMap<>(2);
 
 
-            Ebean.find(Rate.class).where().between("date", parseDate(null), parseDate(null)).and()
-                    .in("currency_type", types)
+            Ebean.find(Rate.class).where().between("date", dateTimeService.today(), dateTimeService.today())
+                    .and().in("currency_type", types)
                     .findList().forEach(rate -> {
                   rates.put(rate.getCurrencyType().name(), rate);
             });

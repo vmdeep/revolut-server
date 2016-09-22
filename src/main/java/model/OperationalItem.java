@@ -17,6 +17,12 @@ public class OperationalItem {
 
     CurrencyTypes currType;
 
+    public OperationalItem(Integer accId, BigDecimal amount, CurrencyTypes currType) {
+        this.accId = accId;
+        this.amount = amount;
+        this.currType = currType;
+    }
+
     public Integer getAccId() {
         return accId;
     }

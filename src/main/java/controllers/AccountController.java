@@ -2,6 +2,9 @@ package controllers;
 
 import com.avaje.ebean.Ebean;
 import model.Account;
+import model.OperationalBook;
+import model.OperationalItem;
+import services.DateTimeService;
 
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
@@ -16,7 +19,9 @@ public class AccountController {
         Need to be dependency injection but try to keep the App simple as possible.
         Good solution here to add HK2 lib
      */
-    RatesController ratesController = new RatesController();
+    private RatesController ratesController = new RatesController();
+
+    private DateTimeService dateTimeService = new DateTimeService();
 
     @GET
     public List<Account> list(@QueryParam("page") Integer page) {
@@ -60,7 +65,7 @@ public class AccountController {
 
         Account fromAcc = this.getById(from);
 
-        BigDecimal toAmmount = ratesController.exchange("EUR", "RUB", amount);
+        BigDecimal toAmount = ratesController.exchange("EUR", "RUB", amount);
 
         if (fromAcc.getAmount().compareTo(amount) == -1) {
             Ebean.rollbackTransaction();
@@ -70,18 +75,25 @@ public class AccountController {
 
         fromAcc.setAmount(fromAcc.getAmount().subtract(amount));
 
-        toAcc.setAmount(toAmmount);
+        toAcc.setAmount(toAmount);
 
         Ebean.update(fromAcc);
 
         Ebean.update(toAcc);
 
-        //TODO: add opsbook items
+        OperationalBook book = new OperationalBook(
+                new OperationalItem(fromAcc.getId(), amount, fromAcc.getCurrType()),
+                new OperationalItem(toAcc.getId(), toAmount, toAcc.getCurrType()),
+                dateTimeService.today()
+        );
+
+        Ebean.insert(book);
+
 
         Ebean.commitTransaction();
 
 
-        return null; //TODO: return op id
+        return book.getId();
     }
 
 
