@@ -7,6 +7,70 @@
     <groupId>com.revolut</groupId>
     <artifactId>account-server</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-netty-http</artifactId>
+            <version>2.23.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.avaje.ebean</groupId>
+            <artifactId>ebean</artifactId>
+            <version>8.2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.191</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.repaint.maven</groupId>
+                <artifactId>tiles-maven-plugin</artifactId>
+                <version>2.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <tiles>
+                        <!-- other tiles ... -->
+                        <tile>org.avaje.ebean.tile:enhancement:1.1</tile>
+                    </tiles>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
