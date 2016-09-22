@@ -1,15 +1,20 @@
-import com.avaje.ebean.Ebean;
+import io.netty.channel.Channel;
+import org.glassfish.jersey.netty.httpserver.NettyHttpContainerProvider;
+import org.glassfish.jersey.server.ResourceConfig;
 
-public class Application {
+import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
+
+public class Application extends ResourceConfig {
+
+    public Application() {
+        packages("controllers;services");
+    }
 
     public static void main(String[] args) {
-        Ebean.beginTransaction();
-        System.out.println(">>>");
-        Ebean.commitTransaction();
-
-        System.out.println("<<<");
-
-        return;
+        URI baseUri = UriBuilder.fromUri("http://localhost/").port(9998).build();
+        ResourceConfig resourceConfig = new ResourceConfig(Application.class);
+        Channel server = NettyHttpContainerProvider.createServer(baseUri, resourceConfig, false);
 
 
     }

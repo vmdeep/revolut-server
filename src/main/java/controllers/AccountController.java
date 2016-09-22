@@ -3,13 +3,20 @@ package controllers;
 import com.avaje.ebean.Ebean;
 import model.Account;
 
+import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Singleton
 @Path("/Accounts")
 public class AccountController {
+    /*
+        Need to be dependency injection but try to keep the App simple as possible.
+        Good solution here to add HK2 lib
+     */
+    RatesController ratesController = new RatesController();
 
     @GET
     public List<Account> list(@QueryParam("page") Integer page) {
@@ -24,6 +31,7 @@ public class AccountController {
                 .setMaxRows(page * 10)
                 .orderBy("id")
                 .findList();
+
     }
 
 
@@ -52,7 +60,7 @@ public class AccountController {
 
         Account fromAcc = this.getById(from);
 
-        BigDecimal toAmmount = amount; // TODO: make exchange
+        BigDecimal toAmmount = ratesController.exchange("EUR", "RUB", amount);
 
         if (fromAcc.getAmount().compareTo(amount) == -1) {
             Ebean.rollbackTransaction();
@@ -73,9 +81,7 @@ public class AccountController {
         Ebean.commitTransaction();
 
 
-
-
-        return null;
+        return null; //TODO: return op id
     }
 
 

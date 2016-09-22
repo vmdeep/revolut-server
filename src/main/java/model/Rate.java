@@ -2,16 +2,16 @@ package model;
 
 import model.types.CurrencyTypes;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Rates")
+@Table(name = "Rates",
+        uniqueConstraints =
+        @UniqueConstraint(columnNames = {"currency_type", "date"})
+)
 public class Rate {
 
     @Id
@@ -23,6 +23,12 @@ public class Rate {
     BigDecimal rate;
 
     Date date;
+
+    public Rate(CurrencyTypes currencyType, BigDecimal rate, Date date) {
+        this.currencyType = currencyType;
+        this.rate = rate;
+        this.date = date;
+    }
 
     public Integer getId() {
         return id;

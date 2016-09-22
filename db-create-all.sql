@@ -23,6 +23,7 @@ CREATE TABLE rates (
   rate          DECIMAL(38),
   date          TIMESTAMP,
   CONSTRAINT ck_rates_currency_type CHECK (currency_type IN (0, 1, 2)),
+  CONSTRAINT uq_rates_currency_type_date UNIQUE (currency_type, date),
   CONSTRAINT pk_rates PRIMARY KEY (id)
 );
 
