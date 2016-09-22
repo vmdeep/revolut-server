@@ -56,7 +56,7 @@ public class AccountController {
 
         if (fromAcc.getAmount().compareTo(amount) == -1) {
             Ebean.rollbackTransaction();
-            throw new RuntimeException("Not enough money for operation");
+            throw new RuntimeException("Not enough money for the operation");
 
         }
 
