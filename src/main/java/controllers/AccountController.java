@@ -51,9 +51,12 @@ public class AccountController {
     @Produces(MediaType.APPLICATION_XML)
     public Account getById(@PathParam("id") Integer id) {
 
+        log.debug("get by id = " + id);
+
         Account acc = Ebean.find(Account.class, id);
 
         if (acc == null) {
+            log.error("Account with id " + id + " not found!");
             throw new WebApplicationException("Account with id " + id + " not found!", Response.Status.NOT_FOUND);
         }
         return acc;
@@ -77,12 +80,14 @@ public class AccountController {
         try {
             toAmount = ratesController.exchange(fromAcc.getCurrType().name(), toAcc.getCurrType().name(), amount);
         } catch (Exception e) {
+            log.error("Error while enrolling", () -> e.getLocalizedMessage());
             Ebean.rollbackTransaction();
             throw e;
         }
 
         if (fromAcc.getAmount().compareTo(amount) == -1) {
             Ebean.rollbackTransaction();
+            log.debug("Not enough money for the operation", () -> "From " + from + " To " + id + " need: " + amount + " has: " + fromAcc.getAmount());
             throw new WebApplicationException("Not enough money for the operation", Response.Status.NOT_ACCEPTABLE);
 
         }

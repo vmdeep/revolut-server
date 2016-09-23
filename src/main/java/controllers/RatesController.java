@@ -74,6 +74,7 @@ public class RatesController {
             });
 
             if (!rates.containsKey(from) || !rates.containsKey(to)) {
+                  log.debug("Invalid rates for exchange", () -> "From: " + from + " To:" + to + " Amount: " + amount);
                   throw new WebApplicationException("Invalid rates for exchange", Response.Status.BAD_REQUEST);
             }
 
