@@ -3,6 +3,7 @@ package model;
 import model.types.CurrencyTypes;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
@@ -12,6 +13,7 @@ import java.util.Objects;
         uniqueConstraints =
         @UniqueConstraint(columnNames = {"currency_type", "date"})
 )
+@XmlRootElement
 public class Rate {
 
     @Id

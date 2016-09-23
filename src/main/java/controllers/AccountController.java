@@ -10,6 +10,7 @@ import services.DateTimeService;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,6 +29,7 @@ public class AccountController {
     private static final Logger log = LogManager.getLogger(AccountController.class);
 
     @GET
+    @Produces(MediaType.APPLICATION_XML)
     public List<Account> list(@QueryParam("page") Integer page) {
 
         if (page == null) {
@@ -46,6 +48,7 @@ public class AccountController {
 
     @GET
     @Path("/{id}")
+    @Produces(MediaType.APPLICATION_XML)
     public Account getById(@PathParam("id") Integer id) {
 
         Account acc = Ebean.find(Account.class, id);
@@ -56,8 +59,9 @@ public class AccountController {
         return acc;
     }
 
-    @PUT
+    @POST
     @Path("/{id}")
+    @Produces(MediaType.TEXT_PLAIN)
     public Integer enroll(@PathParam("id") Integer id
             , @QueryParam("from") @NotNull Integer from
             , @QueryParam("amount") @NotNull BigDecimal amount) {
@@ -69,9 +73,13 @@ public class AccountController {
 
         Account fromAcc = this.getById(from);
 
-        BigDecimal toAmount = ratesController.exchange(fromAcc.getCurrType().name(), toAcc.getCurrType().name(), amount);
-
-        System.out.println(amount + " <> " + toAmount);
+        BigDecimal toAmount = null;
+        try {
+            toAmount = ratesController.exchange(fromAcc.getCurrType().name(), toAcc.getCurrType().name(), amount);
+        } catch (Exception e) {
+            Ebean.rollbackTransaction();
+            throw e;
+        }
 
         if (fromAcc.getAmount().compareTo(amount) == -1) {
             Ebean.rollbackTransaction();

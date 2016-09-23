@@ -34,7 +34,7 @@ public class RatesController {
 
       }
 
-      @PUT
+      @POST
       public Integer add(@QueryParam("date") String date
               , @QueryParam("type") CurrencyTypes type
               , @QueryParam("amount") BigDecimal amount) {
@@ -53,8 +53,9 @@ public class RatesController {
             return rate.getId();
       }
 
-      @POST
-      public BigDecimal exchange(@QueryParam("from") String from
+      @GET
+      @Path("/{from}")
+      public BigDecimal exchange(@PathParam("from") String from
               , @QueryParam("to") String to
               , @QueryParam("amount") BigDecimal amount) {
 

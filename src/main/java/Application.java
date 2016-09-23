@@ -13,7 +13,7 @@ public class Application extends ResourceConfig {
 
     public static void main(String[] args) {
         URI baseUri = UriBuilder.fromUri("http://localhost/").port(9998).build();
-        ResourceConfig resourceConfig = new ResourceConfig(Application.class);
+        ResourceConfig resourceConfig = new ResourceConfig(new Application());
         Channel server = NettyHttpContainerProvider.createServer(baseUri, resourceConfig, false);
     }
 }

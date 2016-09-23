@@ -20,6 +20,11 @@ public class AccountControllerTest {
 
     @Before
     public void setUp() throws Exception {
+        Ebean.beginTransaction();
+        Ebean.deleteAll(Ebean.find(Rate.class).findList());
+        Ebean.deleteAll(Ebean.find(Account.class).findList());
+
+        Ebean.commitTransaction();
 
     }
 
@@ -30,8 +35,9 @@ public class AccountControllerTest {
 
     @Test
     public void list() throws Exception {
-        Ebean.beginTransaction();
+        this.setUp();
 
+        Ebean.beginTransaction();
         Ebean.insert(new Account(new BigDecimal(100), CurrencyTypes.EUR));
         Ebean.insert(new Account(new BigDecimal(100), CurrencyTypes.USD));
         Ebean.insert(new Account(new BigDecimal(100), CurrencyTypes.RUB));
@@ -50,8 +56,6 @@ public class AccountControllerTest {
         List<Account> list = accountController.list(1);
 
         Assert.assertEquals(10, list.size());
-        Assert.assertEquals(new Integer(1), list.get(0).getId());
-        Assert.assertEquals(new Integer(10), list.get(9).getId());
 
         list = accountController.list(2);
         Assert.assertTrue(list.size() <= 10);
@@ -79,11 +83,6 @@ public class AccountControllerTest {
     @Test
     public void enroll() throws Exception {
 
-        Ebean.beginTransaction();
-        Ebean.deleteAll(Ebean.find(Rate.class).findList());
-        Ebean.deleteAll(Ebean.find(Account.class).findList());
-
-        Ebean.commitTransaction();
 
         Account fromAcc = new Account(new BigDecimal(100), CurrencyTypes.EUR);
         Account toAcc = new Account(new BigDecimal(100), CurrencyTypes.USD);
