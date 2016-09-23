@@ -24,8 +24,8 @@ public class OperationalBookController {
     @GET
     public List<OperationalBook> list(@QueryParam("page") Integer page, @QueryParam("date") String date) {
         return Ebean.find(OperationalBook.class)
-                .setFirstRow(((page - 1) * 10) + 1)
-                .setMaxRows(page * 10)
+                .setFirstRow(((page - 1) * 10))
+                .setMaxRows(10)
                 .where()
                 .between("date", dateTimeService.parseDate(date), dateTimeService.parseDate(date))
                 .orderBy("id")

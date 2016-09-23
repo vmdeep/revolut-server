@@ -76,6 +76,6 @@ public class RatesController {
                   throw new WebApplicationException("Invalid rates for exchange", Response.Status.BAD_REQUEST);
             }
 
-            return (rates.get(from).getRate().divide(rates.get(to).getRate(), 3, BigDecimal.ROUND_HALF_UP)).multiply(amount);
+            return (rates.get(from).getRate().multiply(amount)).divide(rates.get(to).getRate(), 3, BigDecimal.ROUND_HALF_UP);
       }
 }

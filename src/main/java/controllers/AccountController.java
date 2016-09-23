@@ -3,7 +3,6 @@ package controllers;
 import com.avaje.ebean.Ebean;
 import model.Account;
 import model.OperationalBook;
-import model.OperationalItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import services.DateTimeService;
@@ -37,8 +36,8 @@ public class AccountController {
         }
 
         return Ebean.find(Account.class)
-                .setFirstRow(((page - 1) * 10) + 1)
-                .setMaxRows(page * 10)
+                .setFirstRow(((page - 1) * 10))
+                .setMaxRows(10)
                 .orderBy("id")
                 .findList();
 
@@ -70,7 +69,9 @@ public class AccountController {
 
         Account fromAcc = this.getById(from);
 
-        BigDecimal toAmount = ratesController.exchange("EUR", "RUB", amount);
+        BigDecimal toAmount = ratesController.exchange(fromAcc.getCurrType().name(), toAcc.getCurrType().name(), amount);
+
+        System.out.println(amount + " <> " + toAmount);
 
         if (fromAcc.getAmount().compareTo(amount) == -1) {
             Ebean.rollbackTransaction();
@@ -80,16 +81,18 @@ public class AccountController {
 
         fromAcc.setAmount(fromAcc.getAmount().subtract(amount));
 
-        toAcc.setAmount(toAmount);
+        toAcc.setAmount(toAcc.getAmount().add(toAmount));
 
         Ebean.update(fromAcc);
 
         Ebean.update(toAcc);
 
         OperationalBook book = new OperationalBook(
-                new OperationalItem(fromAcc.getId(), amount, fromAcc.getCurrType()),
-                new OperationalItem(toAcc.getId(), toAmount, toAcc.getCurrType()),
-                dateTimeService.today()
+                fromAcc.getId()
+                , amount
+                , toAcc.getId()
+                , toAmount
+                , dateTimeService.today()
         );
 
         Ebean.insert(book);

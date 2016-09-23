@@ -15,7 +15,5 @@ public class Application extends ResourceConfig {
         URI baseUri = UriBuilder.fromUri("http://localhost/").port(9998).build();
         ResourceConfig resourceConfig = new ResourceConfig(Application.class);
         Channel server = NettyHttpContainerProvider.createServer(baseUri, resourceConfig, false);
-
-
     }
 }

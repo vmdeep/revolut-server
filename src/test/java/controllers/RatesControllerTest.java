@@ -19,6 +19,10 @@ public class RatesControllerTest {
 
     @Before
     public void setUp() throws Exception {
+        Ebean.beginTransaction();
+        Ebean.deleteAll(Ebean.find(Rate.class).findList());
+
+        Ebean.commitTransaction();
 
     }
 
@@ -68,8 +72,8 @@ public class RatesControllerTest {
         ratesController.add(null, CurrencyTypes.EUR, new BigDecimal(70));
         ratesController.add(null, CurrencyTypes.USD, new BigDecimal(60));
 
-        Assert.assertEquals(new BigDecimal("85.700"),
-                ratesController.exchange("USD", "EUR", new BigDecimal(100))
+        Assert.assertEquals(new BigDecimal("8.571"),
+                ratesController.exchange("USD", "EUR", new BigDecimal(10))
         );
 
 

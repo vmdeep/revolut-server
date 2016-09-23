@@ -1,6 +1,10 @@
 package model;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
@@ -12,17 +16,22 @@ public class OperationalBook {
     @GeneratedValue
     private Integer id;
 
-    @Embedded
-    private OperationalItem from;
 
-    @Embedded
-    private OperationalItem to;
+    private Integer fromId;
+    private BigDecimal fromAmount;
+
+
+    private Integer toId;
+    private BigDecimal toAmount;
+
 
     private Date date;
 
-    public OperationalBook(OperationalItem from, OperationalItem to, Date date) {
-        this.from = from;
-        this.to = to;
+    public OperationalBook(Integer fromId, BigDecimal fromAmount, Integer toId, BigDecimal toAmount, Date date) {
+        this.fromId = fromId;
+        this.fromAmount = fromAmount;
+        this.toId = toId;
+        this.toAmount = toAmount;
         this.date = date;
     }
 
@@ -34,20 +43,36 @@ public class OperationalBook {
         this.id = id;
     }
 
-    public OperationalItem getFrom() {
-        return from;
+    public Integer getFromId() {
+        return fromId;
     }
 
-    public void setFrom(OperationalItem from) {
-        this.from = from;
+    public void setFromId(Integer fromId) {
+        this.fromId = fromId;
     }
 
-    public OperationalItem getTo() {
-        return to;
+    public BigDecimal getFromAmount() {
+        return fromAmount;
     }
 
-    public void setTo(OperationalItem to) {
-        this.to = to;
+    public void setFromAmount(BigDecimal fromAmount) {
+        this.fromAmount = fromAmount;
+    }
+
+    public Integer getToId() {
+        return toId;
+    }
+
+    public void setToId(Integer toId) {
+        this.toId = toId;
+    }
+
+    public BigDecimal getToAmount() {
+        return toAmount;
+    }
+
+    public void setToAmount(BigDecimal toAmount) {
+        this.toAmount = toAmount;
     }
 
     public Date getDate() {

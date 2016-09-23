@@ -27,6 +27,11 @@ public class Account {
         return id;
     }
 
+    public Account(BigDecimal amount, CurrencyTypes currType) {
+        this.amount = amount;
+        this.currType = currType;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }

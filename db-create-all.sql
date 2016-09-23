@@ -8,12 +8,12 @@ CREATE TABLE accounts (
 );
 
 CREATE TABLE operational_book (
-  id        INTEGER AUTO_INCREMENT NOT NULL,
-  acc_id    INTEGER,
-  amount    DECIMAL(38),
-  curr_type INTEGER,
-  date      TIMESTAMP,
-  CONSTRAINT ck_operational_book_curr_type CHECK (curr_type IN (0, 1, 2)),
+  id          INTEGER AUTO_INCREMENT NOT NULL,
+  from_id     INTEGER,
+  from_amount DECIMAL(38),
+  to_id       INTEGER,
+  to_amount   DECIMAL(38),
+  date        TIMESTAMP,
   CONSTRAINT pk_operational_book PRIMARY KEY (id)
 );
 

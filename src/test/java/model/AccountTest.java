@@ -10,22 +10,14 @@ import java.math.BigDecimal;
 
 public class AccountTest {
 
-    public static Account newAccount() {
-        Account acc = new Account();
 
-        acc.setAmount(new BigDecimal(100));
-
-        acc.setCurrType(CurrencyTypes.EUR);
-
-        return acc;
-    }
 
 
     @Test
     public void insert() {
 
 
-        Account acc = newAccount();
+        Account acc = new Account(new BigDecimal(100), CurrencyTypes.EUR);
 
         Ebean.beginTransaction();
         Ebean.insert(acc);
@@ -49,7 +41,7 @@ public class AccountTest {
 
     @Test
     public void update() {
-        Account acc = newAccount();
+        Account acc = new Account(new BigDecimal(100), CurrencyTypes.EUR);
 
         Ebean.beginTransaction();
 
@@ -77,7 +69,7 @@ public class AccountTest {
 
     @Test
     public void delete() {
-        Account acc = newAccount();
+        Account acc = new Account(new BigDecimal(100), CurrencyTypes.EUR);
 
         Ebean.beginTransaction();
 
