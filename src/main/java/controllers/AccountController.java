@@ -70,51 +70,49 @@ public class AccountController {
             , @QueryParam("amount") @NotNull BigDecimal amount) {
 
         Ebean.beginTransaction();
-
-
-        Account toAcc = this.getById(id);
-
-        Account fromAcc = this.getById(from);
-
-        BigDecimal toAmount = null;
         try {
+
+            Account toAcc = this.getById(id);
+
+            Account fromAcc = this.getById(from);
+
+            BigDecimal toAmount = null;
+
             toAmount = ratesController.exchange(fromAcc.getCurrType().name(), toAcc.getCurrType().name(), amount);
-        } catch (Exception e) {
-            log.error("Error while enrolling", () -> e.getLocalizedMessage());
-            Ebean.rollbackTransaction();
-            throw e;
+
+            if (fromAcc.getAmount().compareTo(amount) == -1) {
+                Ebean.rollbackTransaction();
+                log.debug("Not enough money for the operation", () -> "From " + from + " To " + id + " need: " + amount + " has: " + fromAcc.getAmount());
+                throw new WebApplicationException("Not enough money for the operation", Response.Status.NOT_ACCEPTABLE);
+
+            }
+
+            fromAcc.setAmount(fromAcc.getAmount().subtract(amount));
+
+            toAcc.setAmount(toAcc.getAmount().add(toAmount));
+
+            Ebean.update(fromAcc);
+
+            Ebean.update(toAcc);
+
+            OperationalBook book = new OperationalBook(
+                    fromAcc.getId()
+                    , amount
+                    , toAcc.getId()
+                    , toAmount
+                    , dateTimeService.today()
+            );
+
+            Ebean.insert(book);
+
+
+            Ebean.commitTransaction();
+
+
+            return book.getId();
+        } finally {
+            Ebean.endTransaction();
         }
-
-        if (fromAcc.getAmount().compareTo(amount) == -1) {
-            Ebean.rollbackTransaction();
-            log.debug("Not enough money for the operation", () -> "From " + from + " To " + id + " need: " + amount + " has: " + fromAcc.getAmount());
-            throw new WebApplicationException("Not enough money for the operation", Response.Status.NOT_ACCEPTABLE);
-
-        }
-
-        fromAcc.setAmount(fromAcc.getAmount().subtract(amount));
-
-        toAcc.setAmount(toAcc.getAmount().add(toAmount));
-
-        Ebean.update(fromAcc);
-
-        Ebean.update(toAcc);
-
-        OperationalBook book = new OperationalBook(
-                fromAcc.getId()
-                , amount
-                , toAcc.getId()
-                , toAmount
-                , dateTimeService.today()
-        );
-
-        Ebean.insert(book);
-
-
-        Ebean.commitTransaction();
-
-
-        return book.getId();
     }
 
 

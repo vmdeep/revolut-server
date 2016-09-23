@@ -41,16 +41,21 @@ public class RatesController {
 
 
             Ebean.beginTransaction();
+            try {
+                  Rate rate = new Rate(type, amount, dateTimeService.parseDate(date));
 
-            Rate rate = new Rate(type, amount, dateTimeService.parseDate(date));
-
-            Ebean.insert(rate);
-
-
-            Ebean.commitTransaction();
+                  Ebean.insert(rate);
 
 
-            return rate.getId();
+                  Ebean.commitTransaction();
+
+                  return rate.getId();
+
+            } finally {
+                  Ebean.endTransaction();
+            }
+
+
       }
 
       @GET
